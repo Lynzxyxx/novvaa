@@ -4,7 +4,7 @@ import SWRegister from './sw-register';
 
 export const metadata: Metadata = {
   title: 'Nova AI Chat',
-  description: 'Chat AI pribadi ala ChatGPT — chat, coding, dan buat gambar.',
+  description: 'Nova Ai Asissten Virtual',
   manifest: '/manifest.json',
   icons: {
     icon: '/icons/icon-192.png',
