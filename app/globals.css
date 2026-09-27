@@ -1,0 +1,82 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html, body {
+  height: 100%;
+  background-color: #ffffff;
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-thumb {
+  background: #d9d9e3;
+  border-radius: 8px;
+}
+
+.prose-chat p {
+  margin: 0 0 0.6rem 0;
+}
+.prose-chat p:last-child {
+  margin-bottom: 0;
+}
+
+/* Blok kode tetap gelap meskipun halamannya terang, persis seperti ChatGPT asli */
+.code-block {
+  background: #0d0d10;
+  border-radius: 10px;
+  margin: 0.5rem 0;
+  overflow: hidden;
+}
+.code-lang {
+  font-size: 12px;
+  color: #9ca3af;
+  padding: 7px 12px;
+  border-bottom: 1px solid #2a2a31;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+.code-lang span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+.code-actions {
+  display: flex;
+  gap: 10px;
+  flex-shrink: 0;
+}
+.code-actions button {
+  background: none;
+  border: none;
+  color: #9ca3af;
+  font-size: 12px;
+  cursor: pointer;
+  padding: 2px 4px;
+}
+.code-actions button:hover {
+  color: #ffffff;
+}
+.code-block pre {
+  margin: 0;
+  padding: 12px 14px;
+  overflow-x: auto;
+}
+.code-block code {
+  font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 13px;
+  color: #e5e7eb;
+  white-space: pre;
+}
+.inline-code {
+  background: #f0f0f3;
+  color: #b3261e;
+  padding: 2px 6px;
+  border-radius: 5px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.9em;
+}
