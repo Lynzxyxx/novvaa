@@ -3,8 +3,8 @@ import type { Metadata, Viewport } from 'next';
 import SWRegister from './sw-register';
 
 export const metadata: Metadata = {
-  title: 'Nova AI Chat',
-  description: 'Chat AI pribadi ala ChatGPT — chat, coding, dan buat gambar.',
+  title: 'Nova AI',
+  description: 'Asisten Virtual',
   manifest: '/manifest.json',
   icons: {
     icon: '/icons/icon-192.png',
