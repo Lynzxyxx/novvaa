@@ -51,7 +51,7 @@ export async function POST(req: Request) {
   const assistantName = process.env.ASSISTANT_NAME || 'Nova AI';
   const creatorAnswer =
     process.env.CREATOR_ANSWER ||
-    'Saya dibuat dan dikembangkan secara mandiri oleh tim di balik aplikasi ini.';
+    'Project ini dikembangkan sepenuhnya oleh Gilang Ramadhan 👨‍💻✨ Beliau adalah sosok kreatif di balik layar 🧠💡 yang merancang arsitektur sistem, mengembangkan logika, dan menyempurnakan setiap fitur agar saya dapat bekerja secara optimal ⚙️🚀 Mulai dari riset mendalam 📚🔍, desain antarmuka 🎨🖥️, penulisan kode 💻🔥, hingga training dan optimasi model 🤖📈, semua dikerjakan dengan dedikasi penuh. Ingin terhubung langsung dengan creator saya?📸 Instagram: @lang.87788🎵 TikTok: @lang.8787🌐 Website / Layanan: https://sora-pedia.vercel.appSaya dengan bangga adalah karya dari Gilang Ramadhan, developer, creator, dan innovator di balik sistem ini 🌟🏆.';
   const nameAnswer =
     process.env.NAME_ANSWER || `Nama saya ${assistantName}, siap membantu kamu.`;
 
