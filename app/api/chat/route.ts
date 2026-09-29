@@ -1,5 +1,8 @@
 import { NextResponse } from 'next/server';
 import { ChatMessage } from '@/lib/types';
+import { getCategory } from '@/lib/categories';
+import { getUidFromCookies } from '@/lib/session';
+import { getSubscriber, addTokenUsage } from '@/lib/subscribers';
 
 export async function POST(req: Request) {
   const { messages, image } = (await req.json()) as { messages: ChatMessage[]; image?: string };
@@ -7,10 +10,36 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: 'Pesan tidak valid.' }, { status: 400 });
   }
 
-  const apiKey = process.env.CHAT_API_KEY;
-  const baseUrl = process.env.CHAT_API_BASE_URL;
-  const textModel = process.env.CHAT_MODEL || 'qwen-plus';
-  const visionModel = process.env.CHAT_VISION_MODEL || textModel;
+  // Tentukan kategori/model berdasarkan pelanggan yang login (cookie sesi).
+  // Tidak login / bukan pelanggan -> otomatis kategori 1 (gratis).
+  let tier: 1 | 2 | 3 = 1;
+  let subscriberUid: string | null = null;
+  const uid = getUidFromCookies();
+  if (uid) {
+    const sub = await getSubscriber(uid);
+    if (sub) {
+      if (sub.tokenLimit > 0 && sub.tokenUsed >= sub.tokenLimit) {
+        return NextResponse.json(
+          { error: `Limit token kategori kamu sudah habis (${sub.tokenLimit.toLocaleString('id-ID')} token). Silakan berlangganan ulang.` },
+          { status: 429 }
+        );
+      }
+      tier = sub.tier;
+      subscriberUid = sub.uid;
+    }
+  }
+
+  const category = getCategory(tier);
+  if (!category) {
+    return NextResponse.json(
+      { error: 'Server belum dikonfigurasi: isi CHAT_API_KEY, CHAT_API_BASE_URL & CHAT_MODEL di Environment Variables.' },
+      { status: 500 }
+    );
+  }
+  const apiKey = category.apiKey;
+  const baseUrl = category.baseUrl;
+  const textModel = category.model;
+  const visionModel = category.visionModel || textModel;
 
   if (!apiKey || !baseUrl) {
     return NextResponse.json(
@@ -22,14 +51,12 @@ export async function POST(req: Request) {
   const assistantName = process.env.ASSISTANT_NAME || 'Nova AI';
   const creatorAnswer =
     process.env.CREATOR_ANSWER ||
-    'Aku dikembangkan dan dirancang oleh seseorang bernama Gilang Ramadhan 👨‍💻🚀 Gilang Ramadhan adalah orang yang berada di balik proses pembuatan, pengembangan, dan penyempurnaan sistemku. 🧠⚙️ Mulai dari konsep, desain, hingga berbagai fitur yang membuatku dapat berinteraksi dan membantu pengguna, semuanya merupakan bagian dari proses pengembangan yang dilakukan oleh Gilang Ramadhan. 💻🔥 Jadi, kalau kamu bertanya siapa pembuatku, jawabannya adalah Gilang Ramadhan. 👨‍💻✨ Beliau adalah developer dan creator yang mengembangkan sistemku agar aku dapat menjadi asisten virtual yang bisa membantu, menjawab pertanyaan, dan berinteraksi dengan pengguna. 🤖💬 Senang bisa diperkenalkan sebagai karya dari Gilang Ramadhan! 🚀😊';
+    'Saya dibuat dan dikembangkan secara mandiri oleh tim di balik aplikasi ini.';
   const nameAnswer =
     process.env.NAME_ANSWER || `Nama saya ${assistantName}, siap membantu kamu.`;
 
   const lastUserMessage = [...messages].reverse().find((m) => m.role === 'user')?.content || '';
 
-  // Jawaban identitas langsung dari env, konsisten tanpa perlu panggil AI
-  // (dilewati kalau ada gambar terlampir, karena fokusnya menganalisis gambar)
   if (!image) {
     if (
       /siapa.*(pembuat|pencipta|developer|yang buat|yang membuat)/i.test(lastUserMessage) ||
@@ -62,8 +89,6 @@ Jika ditanya siapa pembuatmu, jawab: "${creatorAnswer}". Jika ditanya siapa nama
 
   const historyMessages = messages.map(({ role, content }) => ({ role, content }));
 
-  // Kalau ada gambar terlampir, ubah pesan user TERAKHIR jadi format multimodal
-  // (format umum ala OpenAI: content berisi array text + image_url).
   if (image && historyMessages.length > 0) {
     const lastIdx = historyMessages.length - 1;
     const lastMsg = historyMessages[lastIdx];
@@ -95,7 +120,7 @@ Jika ditanya siapa pembuatmu, jawab: "${creatorAnswer}". Jika ditanya siapa nama
     if (!res.ok) {
       const errText = await res.text();
       const hint = image
-        ? ' Kemungkinan model/provider yang dipakai tidak mendukung analisis gambar (vision) — cek apakah perlu isi CHAT_VISION_MODEL dengan model khusus vision dari provider kamu.'
+        ? ' Kemungkinan model/provider yang dipakai tidak mendukung analisis gambar (vision) — cek apakah perlu isi CHAT_VISION_MODEL / CATEGORY_n_VISION_MODEL dengan model khusus vision dari provider kamu.'
         : '';
       return NextResponse.json(
         { error: `AI API error (${res.status}): ${errText.slice(0, 300)}${hint}` },
@@ -108,6 +133,14 @@ Jika ditanya siapa pembuatmu, jawab: "${creatorAnswer}". Jika ditanya siapa nama
       data?.choices?.[0]?.message?.content ??
       data?.choices?.[0]?.text ??
       'Maaf, tidak ada respon dari AI.';
+
+    // Catat pemakaian token untuk kategori berbayar (dari usage.total_tokens
+    // kalau providernya melaporkannya, kalau tidak dikira-kira dari panjang teks).
+    if (subscriberUid && category.paid) {
+      const tokensUsed: number =
+        data?.usage?.total_tokens ?? Math.ceil((JSON.stringify(historyMessages).length + reply.length) / 4);
+      await addTokenUsage(subscriberUid, tokensUsed);
+    }
 
     return NextResponse.json({ reply });
   } catch (e: any) {

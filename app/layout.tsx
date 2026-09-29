@@ -4,7 +4,7 @@ import SWRegister from './sw-register';
 
 export const metadata: Metadata = {
   title: 'Nova AI Chat',
-  description: 'Nova Ai Asissten Virtual',
+  description: 'Chat AI pribadi ala ChatGPT — chat, coding, dan buat gambar.',
   manifest: '/manifest.json',
   icons: {
     icon: '/icons/icon-192.png',
@@ -18,7 +18,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: '#111111',
+  themeColor: '#02040f',
   width: 'device-width',
   initialScale: 1,
   maximumScale: 1,

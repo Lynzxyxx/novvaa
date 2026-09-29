@@ -5,6 +5,7 @@ import { getCookie, setCookie } from '@/lib/cookies';
 import { ChatMessage, ChatMode, Conversation } from '@/lib/types';
 import { useInstallPrompt } from '@/lib/useInstallPrompt';
 import MessageContent from '@/components/MessageContent';
+import SubscriptionPanel from '@/components/SubscriptionPanel';
 
 const COOKIE_KEY = 'nova_conversations';
 const COOKIE_MAX_BYTES = 3500; // aman di bawah batas ~4KB browser
@@ -131,6 +132,7 @@ export default function ChatPage() {
   const [showSearch, setShowSearch] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [showSettings, setShowSettings] = useState(false);
+  const [showSubscription, setShowSubscription] = useState(false);
   const [showInstallInfo, setShowInstallInfo] = useState(false);
   const [attachedImage, setAttachedImage] = useState<{ dataUrl: string; name: string } | null>(null);
   const [imageError, setImageError] = useState('');
@@ -386,7 +388,21 @@ export default function ChatPage() {
 
         <div className="p-2 border-t border-gray-200 relative">
           <button
-            onClick={() => setShowSettings((s) => !s)}
+            onClick={() => {
+              setShowSubscription((s) => !s);
+              setShowSettings(false);
+            }}
+            className="w-full flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm hover:bg-gray-200 transition text-left"
+          >
+            💎 Langganan
+          </button>
+          {showSubscription && <SubscriptionPanel onClose={() => setShowSubscription(false)} />}
+
+          <button
+            onClick={() => {
+              setShowSettings((s) => !s);
+              setShowSubscription(false);
+            }}
             className="w-full flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm hover:bg-gray-200 transition text-left"
           >
             <SettingsIcon /> Pengaturan
