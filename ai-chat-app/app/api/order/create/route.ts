@@ -1,5 +1,4 @@
 import { NextResponse } from 'next/server';
-import { randomUUID } from 'crypto';
 import { getCategory, parseTier } from '@/lib/categories';
 import { createInvoice } from '@/lib/qris';
 import { saveOrder } from '@/lib/orders';
@@ -16,16 +15,18 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Kategori ini belum dikonfigurasi di server.' }, { status: 500 });
     }
 
-    const orderId = randomUUID();
-    const invoice = await createInvoice(category.price, orderId);
+    const invoice = await createInvoice(category.price, `Langganan ${category.name}`);
+    // orderId kita = transaction_id dari BuatQris, supaya cek status tinggal
+    // pakai ID yang sama tanpa perlu tabel mapping tambahan.
+    const orderId = invoice.transactionId;
 
     await saveOrder({
       orderId,
       tier: t,
       amount: category.price,
       status: 'pending',
-      qrString: invoice.qrString,
-      qrImageUrl: invoice.qrImageUrl,
+      qrImageUrl: invoice.qrUrl,
+      paymentUrl: invoice.paymentUrl,
       createdAt: new Date().toISOString(),
     });
 
@@ -33,8 +34,8 @@ export async function POST(req: Request) {
       orderId,
       tier: t,
       amount: category.price,
-      qrString: invoice.qrString,
-      qrImageUrl: invoice.qrImageUrl,
+      qrImageUrl: invoice.qrUrl,
+      paymentUrl: invoice.paymentUrl,
     });
   } catch (e: any) {
     return NextResponse.json({ error: e?.message || 'Gagal membuat pesanan QRIS.' }, { status: 500 });

@@ -4,7 +4,7 @@ import SWRegister from './sw-register';
 
 export const metadata: Metadata = {
   title: 'Nova AI',
-  description: 'Asisten Virtual',
+  description: 'Asisten Virtual 🌐.',
   manifest: '/manifest.json',
   icons: {
     icon: '/icons/icon-192.png',

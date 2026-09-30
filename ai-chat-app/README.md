@@ -124,9 +124,13 @@ Ada 3 kategori model AI, diatur lewat menu **💎 Langganan** di sidebar:
 5. Isi `SESSION_SECRET` dengan string acak panjang (contoh: `openssl rand -base64 32`) -- ini buat menandatangani cookie sesi pelanggan.
 
 ### Setup QRIS (api.buatqris.site)
-Isi `BUATQRIS_BASE_URL`, `BUATQRIS_ACCOUNT_ID`, `BUATQRIS_SECRET_TOKEN` sesuai akun kamu di sana.
+1. Daftar/login di https://app.buatqris.site, buka menu **Open API** di dashboard.
+2. Copy `account_id` dan `secret_token` dari situ, isi ke `BUATQRIS_ACCOUNT_ID` & `BUATQRIS_SECRET_TOKEN`. `BUATQRIS_BASE_URL` biarkan default (`https://api.buatqris.site`).
+3. Integrasi di `lib/qris.ts` sudah dicocokkan persis dengan dokumentasi resmi mereka (satu endpoint, `application/x-www-form-urlencoded`, parameter `action=api_create_qris` / `api_check_status`) -- bukan lagi tebakan.
+4. Biaya dari BuatQris mulai 1% per transaksi **berhasil** saja (pending/gagal/expired gratis), tanpa biaya daftar/bulanan.
+5. Ada **mode Sandbox** di dashboard mereka kalau mau tes tanpa uang asli sebelum pakai akun produksi -- cek menu Open API di dashboard untuk detailnya.
 
-PENTING -- jujur soal ini: saya tidak berhasil mengakses dokumentasi resmi `api.buatqris.site` saat membuat integrasi ini (percobaan fetch gagal, pencarian juga tidak menemukan dokumentasinya), jadi bentuk request/response di `lib/qris.ts` adalah desain terbaik-yang-bisa-ditebak ala provider QRIS pada umumnya (endpoint `/create-invoice` dan `/check-status`). Kemungkinan besar nama endpoint atau field JSON-nya perlu disesuaikan dengan dokumentasi asli. Semua bagian yang mungkin perlu diubah sengaja dikumpulkan dalam satu file -- `lib/qris.ts` -- supaya gampang disesuaikan. Kalau kamu punya link dokumentasi resminya, kirim ke saya dan saya sesuaikan persis.
+Catatan: sistem ini cek status pembayaran dengan **polling** (nge-cek berkala ke BuatQris, sudah jalan otomatis di panel Langganan). BuatQris juga punya fitur **webhook** (`callback_url`, ditandatangani `HMAC-SHA256`) yang lebih real-time dan tanpa perlu polling -- belum saya pasang di versi ini supaya setup-nya tetap simpel (tidak perlu bikin endpoint publik + verifikasi signature), tapi bisa saya tambahkan kalau kamu mau nanti.
 
 ### Mengubah harga/limit/nama kategori
 Semua bisa diubah lewat Environment Variable tanpa ubah kode, lihat `CATEGORY_2_*` dan `CATEGORY_3_*` di `.env.example`. Kalau `CATEGORY_2_MODEL` atau `CATEGORY_3_MODEL` dikosongkan, kategori itu otomatis tidak muncul di panel Langganan (dianggap belum aktif).

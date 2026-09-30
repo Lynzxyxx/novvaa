@@ -35,7 +35,7 @@ export default function SubscriptionPanel({ onClose }: { onClose: () => void }) 
   const [me, setMe] = useState<Me | null>(null);
   const [view, setView] = useState<View>('list');
   const [selectedTier, setSelectedTier] = useState<2 | 3 | null>(null);
-  const [order, setOrder] = useState<{ orderId: string; qrImageUrl?: string; qrString?: string; amount: number } | null>(null);
+  const [order, setOrder] = useState<{ orderId: string; qrImageUrl?: string; paymentUrl?: string; amount: number } | null>(null);
   const [orderStatus, setOrderStatus] = useState<'pending' | 'paid' | 'expired'>('pending');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -256,10 +256,18 @@ export default function SubscriptionPanel({ onClose }: { onClose: () => void }) 
           </p>
           {order.qrImageUrl ? (
             <img src={order.qrImageUrl} alt="QRIS" className="w-full rounded-lg border border-gray-200" />
-          ) : order.qrString ? (
-            <div className="text-[11px] break-all bg-gray-50 rounded-lg p-2 font-mono">{order.qrString}</div>
           ) : (
             <p className="text-xs text-gray-400">QR tidak tersedia dari provider.</p>
+          )}
+          {order.paymentUrl && (
+            <a
+              href={order.paymentUrl}
+              target="_blank"
+              rel="noreferrer"
+              className="block text-center text-xs text-accent-600 hover:underline mt-2"
+            >
+              Atau buka halaman pembayaran →
+            </a>
           )}
 
           <p className="text-xs text-center mt-2">

@@ -6,7 +6,7 @@ export interface Order {
   tier: Tier;
   amount: number;
   status: 'pending' | 'paid' | 'expired';
-  qrString?: string;
+  paymentUrl?: string;
   qrImageUrl?: string;
   createdAt: string;
   paidAt?: string;
