@@ -1,0 +1,8 @@
+<resources>
+    <style name="Theme.NovaAI" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="colorPrimary">@color/novaIndigo</item>
+        <item name="colorPrimaryDark">@color/novaBg</item>
+        <item name="colorAccent">@color/novaFuchsia</item>
+        <item name="android:windowBackground">@color/novaBg</item>
+    </style>
+</resources>

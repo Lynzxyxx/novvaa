@@ -1,0 +1,36 @@
+import './globals.css';
+import type { Metadata, Viewport } from 'next';
+import SWRegister from './sw-register';
+
+export const metadata: Metadata = {
+  title: 'Nova AI',
+  description: 'Asisten Virtual.',
+  manifest: '/manifest.json',
+  icons: {
+    icon: '/icons/icon-192.png',
+    apple: '/icons/apple-touch-icon.png',
+  },
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: 'default',
+    title: 'Nova AI',
+  },
+};
+
+export const viewport: Viewport = {
+  themeColor: '#02040f',
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 1,
+};
+
+export default function RootLayout({ children }: { children: React.ReactNode }) {
+  return (
+    <html lang="id">
+      <body className="bg-white text-gray-900">
+        <SWRegister />
+        {children}
+      </body>
+    </html>
+  );
+}

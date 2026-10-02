@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">Nova AI</string>
+    <string name="btn_enable_bubble">Aktifkan Gelembung Chat</string>
+    <string name="btn_disable_bubble">Matikan Gelembung Chat</string>
+    <string name="notif_channel_name">Gelembung Nova AI</string>
+    <string name="notif_bubble_active">Gelembung Nova AI aktif</string>
+    <string name="notif_scanning">Nova AI sedang membaca layar...</string>
+    <string name="scan_button">Scan Layar</string>
+    <string name="close_button">Tutup</string>
+</resources>

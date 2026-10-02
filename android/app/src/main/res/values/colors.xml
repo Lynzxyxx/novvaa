@@ -1,0 +1,7 @@
+<resources>
+    <color name="novaBg">#02040F</color>
+    <color name="novaIndigo">#6366F1</color>
+    <color name="novaFuchsia">#D946EF</color>
+    <color name="white">#FFFFFF</color>
+    <color name="black">#000000</color>
+</resources>
