@@ -1,0 +1,12 @@
+[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "app.vercel.novvaa_ai.twa",
+      "sha256_cert_fingerprints": [
+        "38:6C:CC:A7:EB:D9:70:D5:40:4F:7A:41:8B:69:64:90:66:41:CE:DC:FD:D7:2D:E7:08:B4:3C:1D:D6:3D:22:9E"
+      ]
+    }
+  }
+]

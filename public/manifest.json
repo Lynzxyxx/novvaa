@@ -1,7 +1,7 @@
 {
   "name": "Nova AI",
   "short_name": "Nova AI",
-  "description": "Asisten Virtual.",
+  "description": "Asisten Virtual",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#02040f",
